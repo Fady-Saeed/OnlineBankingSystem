@@ -1,0 +1,15 @@
+.homeBackground{
+	-fx-background-image: url("../images/money.jpg");
+	-fx-background-repeat: stretch;
+	-fx-background-size: cover;
+	-fx-background-position: center center;
+}
+.overlay{
+	-fx-background-color: #000;
+	-fx-opacity: 0.5;
+}
+.bg-white{-fx-background-color: #FFF;}
+.btn{
+	-fx-background-color: #22A7F0;
+	-fx-border-radius: 100px !important;
+}
