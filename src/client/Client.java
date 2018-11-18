@@ -1,24 +1,52 @@
 package client;
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Client {
+public class Client extends Application{
+    private enum ClientInterface{
+            GUI,
+            CLI
+    };
+    private static ClientInterface userInterface = ClientInterface.GUI;
+    private final String views_path = "../resources/view/";
+
+
+    @Override
+    public void start(Stage stage) throws Exception{
+        Parent root = FXMLLoader.load(getClass().getResource(views_path+"Login.fxml"));
+        Scene scene = new Scene(root, 800, 600);
+
+        stage.setTitle("Online Bank Client");
+        stage.setScene(scene);
+        stage.show();
+    }
+
     public static void main(String[] args) throws IOException {
-        Scanner scanner = new Scanner(System.in);
-        String ip = scanner.nextLine();
-        int port = scanner.nextInt();
-        ClientHandler handler = new ClientHandler(ip, port);
-        handler.connect();
+        if(userInterface == ClientInterface.GUI) {
+            launch(args);
+        }else if(userInterface == ClientInterface.CLI){
+            Scanner scanner = new Scanner(System.in);
+            String ip = scanner.nextLine();
+            int port = scanner.nextInt();
+            ClientHandler handler = new ClientHandler(ip, port);
+            handler.connect();
 
-        Protocol bankingProtocol = new Protocol(ip,port);
+            Protocol bankingProtocol = new Protocol(ip,port);
 
-        while(true){
-            boolean breakLoop = handleUserRequest(handler,bankingProtocol,scanner);
-            handleServerResponse(handler);
-            if(breakLoop) break;
+            while(true){
+                boolean breakLoop = handleUserRequest(handler,bankingProtocol,scanner);
+                handleServerResponse(handler);
+                if(breakLoop) break;
+            }
+            handler.close();
         }
-        handler.close();
     }
 
     public static boolean handleUserRequest(ClientHandler handler, Protocol bankingProtocol, Scanner scanner) throws IOException{
