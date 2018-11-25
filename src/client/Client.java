@@ -3,20 +3,43 @@ package client;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.IOException;
+import java.io.*;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class Client {
 
     public static void main(String[] args) throws IOException
     {
-        System.out.print("IP: ");
         Scanner scanner = new Scanner(System.in);
-        String ip = scanner.nextLine();
+        Properties prop = new Properties();
+        InputStream input = null;
 
-        System.out.print("Port: ");
-        int port = scanner.nextInt();
-        scanner.nextLine();
+        String ip = "127.0.0.1";
+        int port = 1234;
+
+        try {
+
+            input = new FileInputStream("connection.config");
+
+            // load a properties file
+            prop.load(input);
+
+            // get the property value and print it out
+            ip = prop.getProperty("IP");
+            port = Integer.parseInt(prop.getProperty("PORT"));
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         ClientHandler handler = new ClientHandler(ip, port);
 
         // System.out.println("Connecting...");
